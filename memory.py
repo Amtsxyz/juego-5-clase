@@ -28,6 +28,9 @@ state = {'mark': None}
 # indica que todas las tarjetas empiezan ocultas
 hide = [True] * 64
 
+# guarda la cantidad de veces que el jugador ha hecho clic
+taps = 0
+
 
 def square(x, y):
     # dibuja un cuadro blanco con borde negro en la posición indicada
@@ -58,6 +61,19 @@ def xy(count):
 
 
 def tap(x, y):
+    # permite contar los clics desde cualquier parte del juego
+    global taps
+
+    # suma uno cada vez que el jugador hace clic
+    taps += 1
+
+    # actualiza el número de taps en la ventana del juego
+    title('Memory - Taps: ' + str(taps))
+
+    # si todas las tarjetas ya fueron descubiertas, no permite seguir jugando
+    if all(not hidden for hidden in hide):
+        return
+
     # actualiza las tarjetas cuando el jugador hace clic
     """Update mark and hidden tiles based on tap."""
 
@@ -110,6 +126,19 @@ def draw():
 
         # escribe el número de la tarjeta en la pantalla
         write(tiles[mark], font=('Arial', 30, 'normal'))
+
+    # revisa si todas las tarjetas ya fueron descubiertas
+    if all(not hidden for hidden in hide):
+        up()
+        goto(-85, 0)
+        color('green')
+
+        # muestra un mensaje cuando el jugador encuentra todas las parejas
+        write('ganaste!', font=('Arial', 24, 'bold'))
+
+        # muestra el total de clics que necesitó el jugador
+        goto(-85, -30)
+        write('taps: ' + str(taps), font=('Arial', 16, 'normal'))
 
     # actualiza la pantalla para mostrar los cambios
     update()
