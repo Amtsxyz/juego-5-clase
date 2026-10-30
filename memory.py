@@ -9,24 +9,36 @@ Exercises:
 5. Use letters instead of tiles.
 """
 
+# importa herramientas para mezclar los números y trabajar con los dibujos
 from random import *
 from turtle import *
 
+# importa la función que permite encontrar archivos del juego
 from freegames import path
 
+# carga la imagen del carro que aparece detrás de las tarjetas
 car = path('car.gif')
+
+# crea los números de las tarjetas y los repite para formar parejas
 tiles = list(range(32)) * 2
+
+# guarda la tarjeta que se seleccionó primero
 state = {'mark': None}
+
+# indica que todas las tarjetas empiezan ocultas
 hide = [True] * 64
 
 
 def square(x, y):
+    # dibuja un cuadro blanco con borde negro en la posición indicada
     """Draw white square with black outline at (x, y)."""
     up()
     goto(x, y)
     down()
     color('black', 'white')
     begin_fill()
+
+    # repite cuatro veces para formar los lados del cuadro
     for count in range(4):
         forward(50)
         left(90)
@@ -34,58 +46,98 @@ def square(x, y):
 
 
 def index(x, y):
+    # convierte las coordenadas de la pantalla en la posición de una tarjeta
     """Convert (x, y) coordinates to tiles index."""
     return int((x + 200) // 50 + ((y + 200) // 50) * 8)
 
 
 def xy(count):
+    # convierte el número de una tarjeta en sus coordenadas dentro del tablero
     """Convert tiles count to (x, y) coordinates."""
     return (count % 8) * 50 - 200, (count // 8) * 50 - 200
 
 
 def tap(x, y):
+    # actualiza las tarjetas cuando el jugador hace clic
     """Update mark and hidden tiles based on tap."""
+
+    # identifica qué tarjeta seleccionó el jugador
     spot = index(x, y)
+
+    # obtiene la tarjeta que se había seleccionado anteriormente
     mark = state['mark']
 
+    # si no hay una tarjeta seleccionada, si se repite la misma o si no coinciden los números, guarda la nueva selección
     if mark is None or mark == spot or tiles[mark] != tiles[spot]:
         state['mark'] = spot
+
+    # si los números coinciden, deja visibles las dos tarjetas
     else:
         hide[spot] = False
         hide[mark] = False
+
+        # limpia la selección para poder buscar otra pareja
         state['mark'] = None
 
 
 def draw():
+    # se encarga de dibujar y actualizar todo lo que aparece en el juego
     """Draw image and tiles."""
     clear()
     goto(0, 0)
+
+    # muestra la imagen del carro en el centro del tablero
     shape(car)
     stamp()
 
+    # recorre las 64 tarjetas para revisar cuáles siguen ocultas
     for count in range(64):
+
+        # si la tarjeta está oculta, dibuja su cuadro blanco
         if hide[count]:
             x, y = xy(count)
             square(x, y)
 
+    # obtiene la tarjeta que está seleccionada actualmente
     mark = state['mark']
 
+    # si hay una tarjeta seleccionada y todavía está oculta, muestra su número
     if mark is not None and hide[mark]:
         x, y = xy(mark)
         up()
         goto(x + 2, y)
         color('black')
+
+        # escribe el número de la tarjeta en la pantalla
         write(tiles[mark], font=('Arial', 30, 'normal'))
 
+    # actualiza la pantalla para mostrar los cambios
     update()
+
+    # vuelve a ejecutar draw después de 100 milisegundos
     ontimer(draw, 100)
 
 
+# mezcla los números para que las parejas aparezcan en diferentes lugares
 shuffle(tiles)
+
+# configura el tamaño y la posición de la ventana del juego
 setup(420, 420, 370, 0)
+
+# agrega la imagen del carro para poder utilizarla en el juego
 addshape(car)
+
+# oculta la tortuga que se utiliza para dibujar
 hideturtle()
+
+# desactiva las actualizaciones automáticas para controlar cuándo se dibuja
 tracer(False)
+
+# permite que el jugador seleccione las tarjetas haciendo clic
 onscreenclick(tap)
+
+# inicia el dibujo y la actualización del juego
 draw()
+
+# mantiene abierta la ventana hasta que se cierre el juego
 done()
