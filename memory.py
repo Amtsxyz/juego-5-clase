@@ -9,7 +9,7 @@ Exercises:
 5. Use letters instead of tiles.
 """
 
-# importa herramientas para mezclar los números y trabajar con los dibujos
+# Importa herramientas para mezclar los números y trabajar con los dibujos
 from random import *
 from turtle import *
 
@@ -21,7 +21,7 @@ car = path('car.gif')
 
 # MODIFICACIÓN:
 # Se reemplazan los números por símbolos visuales
-# para facilitar la memorización de las parejas.
+# para facilitar la memorización de las parejas
 
 tiles = [
     '🍎','🍌','🍇','🍉',
@@ -135,7 +135,7 @@ def draw():
         up()
 # MODIFICACION:
 # Se centra el contenido de la tarjeta para mejorar
-# la presentacion visual del juego.
+# la presentacion visual del juego
 
 goto(x + 25, y + 10)
 color('black')
