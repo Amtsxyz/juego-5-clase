@@ -19,8 +19,20 @@ from freegames import path
 # carga la imagen del carro que aparece detrás de las tarjetas
 car = path('car.gif')
 
-# crea los números de las tarjetas y los repite para formar parejas
-tiles = list(range(32)) * 2
+# MODIFICACIÓN:
+# Se reemplazan los números por símbolos visuales
+# para facilitar la memorización de las parejas.
+
+tiles = [
+    '🍎','🍌','🍇','🍉',
+    '🍒','🍓','🥝','🍍',
+    '🐶','🐱','🐭','🐹',
+    '🦊','🐻','🐼','🐨',
+    '⚽','🏀','🏈','🎾',
+    '🎲','🎯','🎸','🎹',
+    '🚗','🚙','🚲','✈️',
+    '🚀','⛵','🚁','🚂'
+] * 2
 
 # guarda la tarjeta que se seleccionó primero
 state = {'mark': None}
@@ -121,14 +133,22 @@ def draw():
     if mark is not None and hide[mark]:
         x, y = xy(mark)
         up()
-        goto(x + 2, y)
-        color('black')
+# MODIFICACION:
+# Se centra el contenido de la tarjeta para mejorar
+# la presentacion visual del juego.
 
-        # escribe el número de la tarjeta en la pantalla
-        write(tiles[mark], font=('Arial', 30, 'normal'))
+goto(x + 25, y + 10)
+color('black')
+
+write(
+    tiles[mark],
+    align='center',
+    #Cambio
+    font=('Arial', 20, 'normal')
+)
 
     # revisa si todas las tarjetas ya fueron descubiertas
-    if all(not hidden for hidden in hide):
+if all(not hidden for hidden in hide):
         up()
         goto(-85, 0)
         color('green')
