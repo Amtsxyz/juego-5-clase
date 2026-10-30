@@ -9,7 +9,7 @@ Exercises:
 5. Use letters instead of tiles.
 """
 
-# Importa herramientas para mezclar los números y trabajar con los dibujos
+# importa herramientas para mezclar los números y trabajar con los dibujos
 from random import *
 from turtle import *
 
@@ -20,7 +20,7 @@ from freegames import path
 car = path('car.gif')
 
 # MODIFICACIÓN:
-# Se reemplazan los números por símbolos visuales
+# se reemplazan los números por símbolos visuales
 # para facilitar la memorización de las parejas
 
 tiles = [
@@ -76,27 +76,36 @@ def tap(x, y):
     # permite contar los clics desde cualquier parte del juego
     global taps
 
+    # evita seguir jugando cuando todas las tarjetas ya fueron descubiertas
+    if all(not hidden for hidden in hide):
+        return
+
     # suma uno cada vez que el jugador hace clic
     taps += 1
 
     # actualiza el número de taps en la ventana del juego
     title('Memory - Taps: ' + str(taps))
 
-    # si todas las tarjetas ya fueron descubiertas, no permite seguir jugando
-    if all(not hidden for hidden in hide):
+    # comprueba que el clic esté dentro del tablero
+    if not (-200 <= x < 200 and -200 <= y < 200):
         return
-
-    # actualiza las tarjetas cuando el jugador hace clic
-    """Update mark and hidden tiles based on tap."""
 
     # identifica qué tarjeta seleccionó el jugador
     spot = index(x, y)
 
+    # evita seleccionar una tarjeta que ya está descubierta
+    if not hide[spot]:
+        return
+
     # obtiene la tarjeta que se había seleccionado anteriormente
     mark = state['mark']
 
-    # si no hay una tarjeta seleccionada, si se repite la misma o si no coinciden los números, guarda la nueva selección
-    if mark is None or mark == spot or tiles[mark] != tiles[spot]:
+    # evita volver a seleccionar exactamente la misma tarjeta
+    if mark == spot:
+        return
+
+    # si no hay una tarjeta seleccionada o las tarjetas no coinciden, guarda la nueva selección
+    if mark is None or tiles[mark] != tiles[spot]:
         state['mark'] = spot
 
     # si los números coinciden, deja visibles las dos tarjetas
@@ -133,22 +142,21 @@ def draw():
     if mark is not None and hide[mark]:
         x, y = xy(mark)
         up()
-# MODIFICACION:
-# Se centra el contenido de la tarjeta para mejorar
-# la presentacion visual del juego
 
-goto(x + 25, y + 10)
-color('black')
+        # MODIFICACIÓN:
+        # se centra el contenido de la tarjeta para mejorar
+        # la presentación visual del juego
+        goto(x + 25, y + 12)
+        color('black')
 
-write(
-    tiles[mark],
-    align='center',
-    #Cambio
-    font=('Arial', 20, 'normal')
-)
+        write(
+            tiles[mark],
+            align='center',
+            font=('Arial', 20, 'normal')
+        )
 
     # revisa si todas las tarjetas ya fueron descubiertas
-if all(not hidden for hidden in hide):
+    if all(not hidden for hidden in hide):
         up()
         goto(-85, 0)
         color('green')
